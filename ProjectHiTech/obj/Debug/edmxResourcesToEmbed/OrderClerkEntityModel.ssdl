@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="projectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="bookDetails">
+    <Key>
+      <PropertyRef Name="BookID" />
+    </Key>
+    <Property Name="BookID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ISBN" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="UnitPrice" Type="float" Nullable="false" />
+    <Property Name="YearPublished" Type="date" Nullable="false" />
+    <Property Name="QOH" Type="int" Nullable="false" />
+    <Property Name="AuthorID" Type="int" Nullable="false" />
+    <Property Name="PublishID" Type="int" Nullable="false" />
+    <Property Name="CategoryID" Type="int" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'project.dbo.bookOrder' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="bookOrder">
+    <Property Name="CustomerOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BookID" Type="int" Nullable="false" />
+    <Property Name="OrderQuality" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="customerDetails">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Street" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="PostalCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="FaxNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreditLimit" Type="float" Nullable="false" />
+  </EntityType>
+  <EntityType Name="customerOrder">
+    <Key>
+      <PropertyRef Name="CustomerOrderID" />
+    </Key>
+    <Property Name="CustomerOrderID" Type="int" Nullable="false" />
+    <Property Name="CustomerID" Type="int" Nullable="false" />
+    <Property Name="OrderDate" Type="date" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_customerOrder_customer">
+    <End Role="customerDetails" Type="Self.customerDetails" Multiplicity="1" />
+    <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customerDetails">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="customerOrder">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="projectModelStoreContainer">
+    <EntitySet Name="bookDetails" EntityType="Self.bookDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="customerDetails" EntityType="Self.customerDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="customerOrder" EntityType="Self.customerOrder" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="bookOrder" EntityType="Self.bookOrder" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [bookOrder].[CustomerOrderID] AS [CustomerOrderID], 
+    [bookOrder].[BookID] AS [BookID], 
+    [bookOrder].[OrderQuality] AS [OrderQuality]
+    FROM [dbo].[bookOrder] AS [bookOrder]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_customerOrder_customer" Association="Self.FK_customerOrder_customer">
+      <End Role="customerDetails" EntitySet="customerDetails" />
+      <End Role="customerOrder" EntitySet="customerOrder" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

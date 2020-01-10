@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="projectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="bookDetail">
+    <Key>
+      <PropertyRef Name="BookID" />
+    </Key>
+    <Property Name="BookID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UnitPrice" Type="Double" Nullable="false" />
+    <Property Name="YearPublished" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="QOH" Type="Int32" Nullable="false" />
+    <Property Name="AuthorID" Type="Int32" Nullable="false" />
+    <Property Name="PublishID" Type="Int32" Nullable="false" />
+    <Property Name="CategoryID" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="customerDetail">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Street" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PostalCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FaxNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CreditLimit" Type="Double" Nullable="false" />
+    <NavigationProperty Name="customerOrders" Relationship="Self.FK_customerOrder_customer" FromRole="customerDetails" ToRole="customerOrder" />
+  </EntityType>
+  <EntityType Name="customerOrder">
+    <Key>
+      <PropertyRef Name="CustomerOrderID" />
+    </Key>
+    <Property Name="CustomerOrderID" Type="Int32" Nullable="false" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="OrderDate" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="customerDetail" Relationship="Self.FK_customerOrder_customer" FromRole="customerOrder" ToRole="customerDetails" />
+  </EntityType>
+  <EntityType Name="bookOrder">
+    <Property Name="CustomerOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="BookID" Type="Int32" Nullable="false" />
+    <Property Name="OrderQuality" Type="Int32" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_customerOrder_customer">
+    <End Role="customerDetails" Type="Self.customerDetail" Multiplicity="1" />
+    <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customerDetails">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="customerOrder">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HiTechProjectEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="bookDetails" EntityType="Self.bookDetail" />
+    <EntitySet Name="customerDetails" EntityType="Self.customerDetail" />
+    <EntitySet Name="customerOrders" EntityType="Self.customerOrder" />
+    <EntitySet Name="bookOrders" EntityType="Self.bookOrder" />
+    <AssociationSet Name="FK_customerOrder_customer" Association="Self.FK_customerOrder_customer">
+      <End Role="customerDetails" EntitySet="customerDetails" />
+      <End Role="customerOrder" EntitySet="customerOrders" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

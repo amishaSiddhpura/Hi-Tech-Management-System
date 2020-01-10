@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="project_dbModel1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="author">
+    <Key>
+      <PropertyRef Name="AuthorID" />
+    </Key>
+    <Property Name="AuthorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="bookData">
+    <Key>
+      <PropertyRef Name="ISBN" />
+    </Key>
+    <Property Name="ISBN" Type="int" Nullable="false" />
+    <Property Name="Title" Type="varchar" MaxLength="50" />
+    <Property Name="UnitPrice" Type="int" />
+    <Property Name="YearPublished" Type="int" />
+    <Property Name="Qoh" Type="int" />
+    <Property Name="Category" Type="varchar" MaxLength="50" />
+    <Property Name="A_ID" Type="int" />
+    <Property Name="S_ID" Type="int" />
+  </EntityType>
+  <EntityType Name="supplierData">
+    <Key>
+      <PropertyRef Name="S_ID" />
+    </Key>
+    <Property Name="S_ID" Type="int" Nullable="false" />
+    <Property Name="Supplier" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_bookData_author">
+    <End Role="author" Type="Self.author" Multiplicity="0..1" />
+    <End Role="bookData" Type="Self.bookData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="AuthorID" />
+      </Principal>
+      <Dependent Role="bookData">
+        <PropertyRef Name="A_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="project_dbModel1StoreContainer">
+    <EntitySet Name="author" EntityType="Self.author" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="bookData" EntityType="Self.bookData" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="supplierData" EntityType="Self.supplierData" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_bookData_author" Association="Self.FK_bookData_author">
+      <End Role="author" EntitySet="author" />
+      <End Role="bookData" EntitySet="bookData" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

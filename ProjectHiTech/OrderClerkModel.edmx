@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="project_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="author">
+          <Key>
+            <PropertyRef Name="AuthorID" />
+          </Key>
+          <Property Name="AuthorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="bookData">
+          <Key>
+            <PropertyRef Name="ISBN" />
+          </Key>
+          <Property Name="ISBN" Type="int" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="50" />
+          <Property Name="UnitPrice" Type="int" />
+          <Property Name="YearPublished" Type="int" />
+          <Property Name="Qoh" Type="int" />
+          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="A_ID" Type="int" />
+          <Property Name="S_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="bookDetails">
+          <Key>
+            <PropertyRef Name="BookID" />
+          </Key>
+          <Property Name="BookID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ISBN" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitPrice" Type="float" Nullable="false" />
+          <Property Name="YearPublished" Type="date" Nullable="false" />
+          <Property Name="QOH" Type="int" Nullable="false" />
+          <Property Name="AuthorID" Type="int" Nullable="false" />
+          <Property Name="PublishID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="bookOrder">
+          <Key>
+            <PropertyRef Name="CustomerOrderID" />
+            <PropertyRef Name="BookID" />
+          </Key>
+          <Property Name="CustomerOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BookID" Type="int" Nullable="false" />
+          <Property Name="OrderQuality" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="customerDetails">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Street" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PostalCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="FaxNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CreditLimit" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="customerOrder">
+          <Key>
+            <PropertyRef Name="CustomerOrderID" />
+          </Key>
+          <Property Name="CustomerOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="OrderDate" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="invoices">
+          <Key>
+            <PropertyRef Name="invoiceID" />
+          </Key>
+          <Property Name="invoiceID" Type="int" Nullable="false" />
+          <Property Name="totalPrice" Type="int" Nullable="false" />
+          <Property Name="paymentDate" Type="date" Nullable="false" />
+          <Property Name="typeOfPayment" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="supplierData">
+          <Key>
+            <PropertyRef Name="S_ID" />
+          </Key>
+          <Property Name="S_ID" Type="int" Nullable="false" />
+          <Property Name="Supplier" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_book_author">
+          <End Role="author" Type="Self.author" Multiplicity="1" />
+          <End Role="bookDetails" Type="Self.bookDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="author">
+              <PropertyRef Name="AuthorID" />
+            </Principal>
+            <Dependent Role="bookDetails">
+              <PropertyRef Name="AuthorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bookData_author">
+          <End Role="author" Type="Self.author" Multiplicity="0..1" />
+          <End Role="bookData" Type="Self.bookData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="author">
+              <PropertyRef Name="AuthorID" />
+            </Principal>
+            <Dependent Role="bookData">
+              <PropertyRef Name="A_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bookOrder_customerOrder">
+          <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="1" />
+          <End Role="bookOrder" Type="Self.bookOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="customerOrder">
+              <PropertyRef Name="CustomerOrderID" />
+            </Principal>
+            <Dependent Role="bookOrder">
+              <PropertyRef Name="CustomerOrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="project_dbModelStoreContainer">
+          <EntitySet Name="author" EntityType="Self.author" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bookData" EntityType="Self.bookData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bookDetails" EntityType="Self.bookDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bookOrder" EntityType="Self.bookOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="customerDetails" EntityType="Self.customerDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="customerOrder" EntityType="Self.customerOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invoices" EntityType="Self.invoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="supplierData" EntityType="Self.supplierData" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_book_author" Association="Self.FK_book_author">
+            <End Role="author" EntitySet="author" />
+            <End Role="bookDetails" EntitySet="bookDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bookData_author" Association="Self.FK_bookData_author">
+            <End Role="author" EntitySet="author" />
+            <End Role="bookData" EntitySet="bookData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bookOrder_customerOrder" Association="Self.FK_bookOrder_customerOrder">
+            <End Role="customerOrder" EntitySet="customerOrder" />
+            <End Role="bookOrder" EntitySet="bookOrder" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="project_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="bookDetail">
+          <Key>
+            <PropertyRef Name="BookID" />
+          </Key>
+          <Property Name="BookID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UnitPrice" Type="Double" Nullable="false" />
+          <Property Name="YearPublished" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="QOH" Type="Int32" Nullable="false" />
+          <Property Name="AuthorID" Type="Int32" Nullable="false" />
+          <Property Name="PublishID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="bookOrders" Relationship="Self.FK_bookOrder_book_ID" FromRole="bookDetails" ToRole="bookOrder" />
+          <NavigationProperty Name="author" Relationship="project_dbModel.FK_book_author" FromRole="bookDetail" ToRole="author" />
+        </EntityType>
+        <EntityType Name="bookOrder">
+          <Key>
+            <PropertyRef Name="CustomerOrderID" />
+            <PropertyRef Name="BookID" />
+          </Key>
+          <Property Name="CustomerOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BookID" Type="Int32" Nullable="false" />
+          <Property Name="OrderQuality" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="bookDetail" Relationship="Self.FK_bookOrder_book_ID" FromRole="bookOrder" ToRole="bookDetails" />
+          <NavigationProperty Name="customerOrder" Relationship="Self.FK_bookOrder_customerOrder" FromRole="bookOrder" ToRole="customerOrder" />
+        </EntityType>
+        <EntityType Name="customerDetail">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Street" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PostalCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FaxNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreditLimit" Type="Double" Nullable="false" />
+          <NavigationProperty Name="customerOrders" Relationship="Self.FK_customerOrder_customer" FromRole="customerDetails" ToRole="customerOrder" />
+        </EntityType>
+        <EntityType Name="customerOrder">
+          <Key>
+            <PropertyRef Name="CustomerOrderID" />
+          </Key>
+          <Property Name="CustomerOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="OrderDate" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="bookOrders" Relationship="Self.FK_bookOrder_customerOrder" FromRole="customerOrder" ToRole="bookOrder" />
+          <NavigationProperty Name="customerDetail" Relationship="Self.FK_customerOrder_customer" FromRole="customerOrder" ToRole="customerDetails" />
+        </EntityType>
+        <Association Name="FK_bookOrder_book_ID">
+          <End Role="bookDetails" Type="Self.bookDetail" Multiplicity="1" />
+          <End Role="bookOrder" Type="Self.bookOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bookDetails">
+              <PropertyRef Name="BookID" />
+            </Principal>
+            <Dependent Role="bookOrder">
+              <PropertyRef Name="BookID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bookOrder_customerOrder">
+          <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="1" />
+          <End Role="bookOrder" Type="Self.bookOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="customerOrder">
+              <PropertyRef Name="CustomerOrderID" />
+            </Principal>
+            <Dependent Role="bookOrder">
+              <PropertyRef Name="CustomerOrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_customerOrder_customer">
+          <End Role="customerDetails" Type="Self.customerDetail" Multiplicity="1" />
+          <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="customerDetails">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="customerOrder">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="HitechProjectEntities3" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="bookDetails" EntityType="Self.bookDetail" />
+          <EntitySet Name="bookOrders" EntityType="Self.bookOrder" />
+          <EntitySet Name="customerDetails" EntityType="Self.customerDetail" />
+          <EntitySet Name="customerOrders" EntityType="Self.customerOrder" />
+          <AssociationSet Name="FK_bookOrder_book_ID" Association="Self.FK_bookOrder_book_ID">
+            <End Role="bookDetails" EntitySet="bookDetails" />
+            <End Role="bookOrder" EntitySet="bookOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bookOrder_customerOrder" Association="Self.FK_bookOrder_customerOrder">
+            <End Role="customerOrder" EntitySet="customerOrders" />
+            <End Role="bookOrder" EntitySet="bookOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_customerOrder_customer" Association="Self.FK_customerOrder_customer">
+            <End Role="customerDetails" EntitySet="customerDetails" />
+            <End Role="customerOrder" EntitySet="customerOrders" />
+          </AssociationSet>
+          <EntitySet Name="authors" EntityType="project_dbModel.author" />
+          <EntitySet Name="bookDatas" EntityType="project_dbModel.bookData" />
+          <EntitySet Name="supplierDatas" EntityType="project_dbModel.supplierData" />
+          <AssociationSet Name="FK_book_author" Association="project_dbModel.FK_book_author">
+            <End Role="author" EntitySet="authors" />
+            <End Role="bookDetail" EntitySet="bookDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_bookData_author" Association="project_dbModel.FK_bookData_author">
+            <End Role="author" EntitySet="authors" />
+            <End Role="bookData" EntitySet="bookDatas" />
+          </AssociationSet>
+          <EntitySet Name="invoices" EntityType="project_dbModel.invoice" />
+        </EntityContainer>
+        <EntityType Name="author">
+          <Key>
+            <PropertyRef Name="AuthorID" />
+          </Key>
+          <Property Name="AuthorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="bookDetails" Relationship="project_dbModel.FK_book_author" FromRole="author" ToRole="bookDetail" />
+          <NavigationProperty Name="bookDatas" Relationship="project_dbModel.FK_bookData_author" FromRole="author" ToRole="bookData" />
+        </EntityType>
+        <EntityType Name="bookData">
+          <Key>
+            <PropertyRef Name="ISBN" />
+          </Key>
+          <Property Name="ISBN" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitPrice" Type="Int32" />
+          <Property Name="YearPublished" Type="Int32" />
+          <Property Name="Qoh" Type="Int32" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="A_ID" Type="Int32" />
+          <Property Name="S_ID" Type="Int32" />
+          <NavigationProperty Name="author" Relationship="project_dbModel.FK_bookData_author" FromRole="bookData" ToRole="author" />
+        </EntityType>
+        <EntityType Name="supplierData">
+          <Key>
+            <PropertyRef Name="S_ID" />
+          </Key>
+          <Property Name="S_ID" Type="Int32" Nullable="false" />
+          <Property Name="Supplier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_book_author">
+          <End Type="project_dbModel.author" Role="author" Multiplicity="1" />
+          <End Type="project_dbModel.bookDetail" Role="bookDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="author">
+              <PropertyRef Name="AuthorID" />
+            </Principal>
+            <Dependent Role="bookDetail">
+              <PropertyRef Name="AuthorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_bookData_author">
+          <End Type="project_dbModel.author" Role="author" Multiplicity="0..1" />
+          <End Type="project_dbModel.bookData" Role="bookData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="author">
+              <PropertyRef Name="AuthorID" />
+            </Principal>
+            <Dependent Role="bookData">
+              <PropertyRef Name="A_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="invoice">
+          <Key>
+            <PropertyRef Name="invoiceID" />
+          </Key>
+          <Property Name="invoiceID" Type="Int32" Nullable="false" />
+          <Property Name="totalPrice" Type="Int32" Nullable="false" />
+          <Property Name="paymentDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="typeOfPayment" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="project_dbModelStoreContainer" CdmEntityContainer="HitechProjectEntities3">
+          <EntitySetMapping Name="bookDetails">
+            <EntityTypeMapping TypeName="project_dbModel.bookDetail">
+              <MappingFragment StoreEntitySet="bookDetails">
+                <ScalarProperty Name="BookID" ColumnName="BookID" />
+                <ScalarProperty Name="ISBN" ColumnName="ISBN" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="YearPublished" ColumnName="YearPublished" />
+                <ScalarProperty Name="QOH" ColumnName="QOH" />
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
+                <ScalarProperty Name="PublishID" ColumnName="PublishID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bookOrders">
+            <EntityTypeMapping TypeName="project_dbModel.bookOrder">
+              <MappingFragment StoreEntitySet="bookOrder">
+                <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+                <ScalarProperty Name="BookID" ColumnName="BookID" />
+                <ScalarProperty Name="OrderQuality" ColumnName="OrderQuality" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="customerDetails">
+            <EntityTypeMapping TypeName="project_dbModel.customerDetail">
+              <MappingFragment StoreEntitySet="customerDetails">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="FaxNumber" ColumnName="FaxNumber" />
+                <ScalarProperty Name="CreditLimit" ColumnName="CreditLimit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="customerOrders">
+            <EntityTypeMapping TypeName="project_dbModel.customerOrder">
+              <MappingFragment StoreEntitySet="customerOrder">
+                <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="authors">
+            <EntityTypeMapping TypeName="project_dbModel.author">
+              <MappingFragment StoreEntitySet="author">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bookDatas">
+            <EntityTypeMapping TypeName="project_dbModel.bookData">
+              <MappingFragment StoreEntitySet="bookData">
+                <ScalarProperty Name="S_ID" ColumnName="S_ID" />
+                <ScalarProperty Name="A_ID" ColumnName="A_ID" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Qoh" ColumnName="Qoh" />
+                <ScalarProperty Name="YearPublished" ColumnName="YearPublished" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ISBN" ColumnName="ISBN" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="supplierDatas">
+            <EntityTypeMapping TypeName="project_dbModel.supplierData">
+              <MappingFragment StoreEntitySet="supplierData">
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="S_ID" ColumnName="S_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="invoices">
+            <EntityTypeMapping TypeName="project_dbModel.invoice">
+              <MappingFragment StoreEntitySet="invoices">
+                <ScalarProperty Name="typeOfPayment" ColumnName="typeOfPayment" />
+                <ScalarProperty Name="paymentDate" ColumnName="paymentDate" />
+                <ScalarProperty Name="totalPrice" ColumnName="totalPrice" />
+                <ScalarProperty Name="invoiceID" ColumnName="invoiceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

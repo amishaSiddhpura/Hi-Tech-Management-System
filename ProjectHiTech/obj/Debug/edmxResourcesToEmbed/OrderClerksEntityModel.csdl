@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HiTechProjectDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="bookDetail">
+    <Key>
+      <PropertyRef Name="BookID" />
+    </Key>
+    <Property Name="BookID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UnitPrice" Type="Double" Nullable="false" />
+    <Property Name="YearPublished" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="QOH" Type="Int32" Nullable="false" />
+    <Property Name="AuthorID" Type="Int32" Nullable="false" />
+    <Property Name="PublishID" Type="Int32" Nullable="false" />
+    <Property Name="CategoryID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="bookOrders" Relationship="Self.FK_bookOrder_book_ID" FromRole="bookDetails" ToRole="bookOrder" />
+  </EntityType>
+  <EntityType Name="bookOrder">
+    <Key>
+      <PropertyRef Name="CustomerOrderID" />
+      <PropertyRef Name="BookID" />
+    </Key>
+    <Property Name="CustomerOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="BookID" Type="Int32" Nullable="false" />
+    <Property Name="OrderQuality" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="bookDetail" Relationship="Self.FK_bookOrder_book_ID" FromRole="bookOrder" ToRole="bookDetails" />
+    <NavigationProperty Name="customerOrder" Relationship="Self.FK_bookOrder_customerOrder" FromRole="bookOrder" ToRole="customerOrder" />
+  </EntityType>
+  <EntityType Name="customerDetail">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Street" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PostalCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FaxNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CreditLimit" Type="Double" Nullable="false" />
+    <NavigationProperty Name="customerOrders" Relationship="Self.FK_customerOrder_customer" FromRole="customerDetails" ToRole="customerOrder" />
+  </EntityType>
+  <EntityType Name="customerOrder">
+    <Key>
+      <PropertyRef Name="CustomerOrderID" />
+    </Key>
+    <Property Name="CustomerOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="OrderDate" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="bookOrders" Relationship="Self.FK_bookOrder_customerOrder" FromRole="customerOrder" ToRole="bookOrder" />
+    <NavigationProperty Name="customerDetail" Relationship="Self.FK_customerOrder_customer" FromRole="customerOrder" ToRole="customerDetails" />
+  </EntityType>
+  <Association Name="FK_bookOrder_book_ID">
+    <End Role="bookDetails" Type="Self.bookDetail" Multiplicity="1" />
+    <End Role="bookOrder" Type="Self.bookOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="bookDetails">
+        <PropertyRef Name="BookID" />
+      </Principal>
+      <Dependent Role="bookOrder">
+        <PropertyRef Name="BookID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_bookOrder_customerOrder">
+    <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="1" />
+    <End Role="bookOrder" Type="Self.bookOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customerOrder">
+        <PropertyRef Name="CustomerOrderID" />
+      </Principal>
+      <Dependent Role="bookOrder">
+        <PropertyRef Name="CustomerOrderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_customerOrder_customer">
+    <End Role="customerDetails" Type="Self.customerDetail" Multiplicity="1" />
+    <End Role="customerOrder" Type="Self.customerOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="customerDetails">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="customerOrder">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HiTechProjectDBEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="bookDetails" EntityType="Self.bookDetail" />
+    <EntitySet Name="bookOrders" EntityType="Self.bookOrder" />
+    <EntitySet Name="customerDetails" EntityType="Self.customerDetail" />
+    <EntitySet Name="customerOrders" EntityType="Self.customerOrder" />
+    <AssociationSet Name="FK_bookOrder_book_ID" Association="Self.FK_bookOrder_book_ID">
+      <End Role="bookDetails" EntitySet="bookDetails" />
+      <End Role="bookOrder" EntitySet="bookOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_bookOrder_customerOrder" Association="Self.FK_bookOrder_customerOrder">
+      <End Role="customerOrder" EntitySet="customerOrders" />
+      <End Role="bookOrder" EntitySet="bookOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_customerOrder_customer" Association="Self.FK_customerOrder_customer">
+      <End Role="customerDetails" EntitySet="customerDetails" />
+      <End Role="customerOrder" EntitySet="customerOrders" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

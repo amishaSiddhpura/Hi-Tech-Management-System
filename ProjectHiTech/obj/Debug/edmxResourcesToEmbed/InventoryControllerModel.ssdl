@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="project_hitechModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="author">
+    <Key>
+      <PropertyRef Name="AuthorID" />
+    </Key>
+    <Property Name="AuthorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="bookDetails">
+    <Key>
+      <PropertyRef Name="BookID" />
+    </Key>
+    <Property Name="BookID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ISBN" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="UnitPrice" Type="float" Nullable="false" />
+    <Property Name="YearPublished" Type="date" Nullable="false" />
+    <Property Name="QOH" Type="int" Nullable="false" />
+    <Property Name="AuthorID" Type="int" Nullable="false" />
+    <Property Name="PublishID" Type="int" Nullable="false" />
+    <Property Name="CategoryID" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_book_category">
+    <End Role="author" Type="Self.author" Multiplicity="1" />
+    <End Role="bookDetails" Type="Self.bookDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="AuthorID" />
+      </Principal>
+      <Dependent Role="bookDetails">
+        <PropertyRef Name="AuthorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_bookDetails_author">
+    <End Role="author" Type="Self.author" Multiplicity="1" />
+    <End Role="bookDetails" Type="Self.bookDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="AuthorID" />
+      </Principal>
+      <Dependent Role="bookDetails">
+        <PropertyRef Name="AuthorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_bookDetails_bookDetails">
+    <End Role="bookDetails" Type="Self.bookDetails" Multiplicity="1" />
+    <End Role="bookDetails1" Type="Self.bookDetails" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="bookDetails">
+        <PropertyRef Name="BookID" />
+      </Principal>
+      <Dependent Role="bookDetails1">
+        <PropertyRef Name="BookID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="project_hitechModelStoreContainer">
+    <EntitySet Name="author" EntityType="Self.author" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="bookDetails" EntityType="Self.bookDetails" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_book_category" Association="Self.FK_book_category">
+      <End Role="author" EntitySet="author" />
+      <End Role="bookDetails" EntitySet="bookDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_bookDetails_author" Association="Self.FK_bookDetails_author">
+      <End Role="author" EntitySet="author" />
+      <End Role="bookDetails" EntitySet="bookDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_bookDetails_bookDetails" Association="Self.FK_bookDetails_bookDetails">
+      <End Role="bookDetails" EntitySet="bookDetails" />
+      <End Role="bookDetails1" EntitySet="bookDetails" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

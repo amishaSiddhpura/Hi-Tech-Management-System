@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="project_hitechModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="author">
+    <Key>
+      <PropertyRef Name="AuthorID" />
+    </Key>
+    <Property Name="AuthorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="bookDetails" Relationship="Self.FK_book_category" FromRole="author" ToRole="bookDetails" />
+    <NavigationProperty Name="bookDetails1" Relationship="Self.FK_bookDetails_author" FromRole="author" ToRole="bookDetails" />
+  </EntityType>
+  <EntityType Name="bookDetail">
+    <Key>
+      <PropertyRef Name="BookID" />
+    </Key>
+    <Property Name="BookID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UnitPrice" Type="Double" Nullable="false" />
+    <Property Name="YearPublished" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="QOH" Type="Int32" Nullable="false" />
+    <Property Name="AuthorID" Type="Int32" Nullable="false" />
+    <Property Name="PublishID" Type="Int32" Nullable="false" />
+    <Property Name="CategoryID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="author" Relationship="Self.FK_book_category" FromRole="bookDetails" ToRole="author" />
+    <NavigationProperty Name="author1" Relationship="Self.FK_bookDetails_author" FromRole="bookDetails" ToRole="author" />
+    <NavigationProperty Name="bookDetails1" Relationship="Self.FK_bookDetails_bookDetails" FromRole="bookDetails" ToRole="bookDetails1" />
+    <NavigationProperty Name="bookDetail1" Relationship="Self.FK_bookDetails_bookDetails" FromRole="bookDetails1" ToRole="bookDetails" />
+  </EntityType>
+  <Association Name="FK_book_category">
+    <End Role="author" Type="Self.author" Multiplicity="1" />
+    <End Role="bookDetails" Type="Self.bookDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="AuthorID" />
+      </Principal>
+      <Dependent Role="bookDetails">
+        <PropertyRef Name="AuthorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_bookDetails_author">
+    <End Role="author" Type="Self.author" Multiplicity="1" />
+    <End Role="bookDetails" Type="Self.bookDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="AuthorID" />
+      </Principal>
+      <Dependent Role="bookDetails">
+        <PropertyRef Name="AuthorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_bookDetails_bookDetails">
+    <End Role="bookDetails" Type="Self.bookDetail" Multiplicity="1" />
+    <End Role="bookDetails1" Type="Self.bookDetail" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="bookDetails">
+        <PropertyRef Name="BookID" />
+      </Principal>
+      <Dependent Role="bookDetails1">
+        <PropertyRef Name="BookID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HiTechEntityInventory" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="authors" EntityType="Self.author" />
+    <EntitySet Name="bookDetails" EntityType="Self.bookDetail" />
+    <AssociationSet Name="FK_book_category" Association="Self.FK_book_category">
+      <End Role="author" EntitySet="authors" />
+      <End Role="bookDetails" EntitySet="bookDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_bookDetails_author" Association="Self.FK_bookDetails_author">
+      <End Role="author" EntitySet="authors" />
+      <End Role="bookDetails" EntitySet="bookDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_bookDetails_bookDetails" Association="Self.FK_bookDetails_bookDetails">
+      <End Role="bookDetails" EntitySet="bookDetails" />
+      <End Role="bookDetails1" EntitySet="bookDetails" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
